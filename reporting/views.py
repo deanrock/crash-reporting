@@ -16,9 +16,9 @@ def report_android(request):
 
     if(request.method=="PUT" or request.method=="POST"):
         #log.log(logging.DEBUG, "got put "+ str(request.body) )
-        json_data = json.loads(request.body)
+        json_data = json.loads(request.body.decode('utf-8'))
         description = "";
-        if(json_data.has_key("description")):
+        if "description" in json_data:
             description = json_data["description"]
         
         DEBUG = json_data['APP_VERSION_CODE'] == 10509999
