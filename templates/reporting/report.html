@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div ng-controller="ReportController">
+	<h1><a href="/reports/android/{{package}}/">{{package}}</a> (#{{report.id}}) 
+
+	<a href="/reports/android/{{package}}/{{report.id}}/?toggle-solved=yes">
+	{% if report.solved == 'solved' %}
+	<span class="glyphicon glyphicon-ok" style="color:green"></span>
+	{% else %}
+	<span class="glyphicon glyphicon-remove" style="color:red"></span>
+	{% endif %}</a></h1>
+
+	<div class="row">
+		<div class="col-md-9">
+			<h3 style="margin-top:60px">Description</h3>
+			<form method="POST" class="clearfix">
+			{%csrf_token%}
+			<textarea name="description" style="width:100%;height:100px">{{report.description}}</textarea><br />
+			<button type="submit" class="btn btn-default pull-right">Save</button>
+			</form>
+			<h3>Stack trace</h3>
+			<a class="hash" name="stack" class="position:relative;top:-50px"></a>
+			{{report.stack_trace|linebreaks}}
+
+			<h3>Logcat</h3>
+			<a class="hash" name="logcat" class="position:relative;top:-50px"></a>
+			<table class="table">
+				{% for lc in logcat %}
+				<tr>
+					<td>{{lc}}</td>
+				</tr>
+				{% endfor %}
+			</table>
+
+			<h3>Environment</h3>
+			<table class="table">
+				{% for e, k in environment.items %}
+					<tr>
+						<td>{{e}}</td>
+						<td>{{k}}</td>
+					</tr>
+				{% endfor %}
+			</table>
+
+			<h3>Shared preferences</h3>
+			<table class="table">
+				{% for e, k in shared_preferences.items %}
+					<tr>
+						<td>{{e}}</td>
+						<td>{{k}}</td>
+					</tr>
+				{% endfor %}
+			</table>
+
+			<h3>Initial configuration</h3>
+			<table class="table">
+				{% for e, k in initial_configuration.items %}
+					<tr>
+						<td>{{e}}</td>
+						<td>{{k}}</td>
+					</tr>
+				{% endfor %}
+			</table>
+
+			<h3>Crash configuration</h3>
+			<table class="table">
+				{% for e, k in crash_configuration.items %}
+					<tr>
+						<td>{{e}}</td>
+						<td>{{k}}</td>
+					</tr>
+				{% endfor %}
+			</table>
+
+			<h3>Other crash data</h3>
+			<table class="table">
+				<tr>
+					<td>Dumpsys meminfo:</td>
+					<td>{{report.dumpsys_meminfo}}</td>
+				</tr>
+				<tr>
+					<td>File path:</td>
+					<td>{{report.file_path}}</td>
+				</tr>
+			</table>
+
+			<h3>Device Info</h3>
+			<a class="hash" name="device" class="position:relative;top:-50px"></a>
+
+			<table class="table">
+				<tr>
+					<th colspan="2">Build</th>
+				</tr>
+				{% for e, k in device_build.items %}
+					<tr>
+						<td>{{e}}</td>
+						<td>{{k}}</td>
+					</tr>
+				{% endfor %}
+
+				<tr>
+					<th colspan="2" style="padding-top:50px">Display</th>
+				</tr>
+				{% for e, k in device_display.items %}
+					<tr>
+						<td>{{e}}</td>
+						<td>{{k}}</td>
+					</tr>
+				{% endfor %}
+				<tr>
+					<th colspan="2"> </th>
+				</tr>
+
+				<tr>
+					<th colspan="2" style="padding-top:50px">Global settings</th>
+				</tr>
+				{% for e, k in device_settings_global.items %}
+					<tr>
+						<td>{{e}}</td>
+						<td>{{k}}</td>
+					</tr>
+				{% endfor %}
+				<tr>
+					<th colspan="2"> </th>
+				</tr>
+
+				<tr>
+					<th colspan="2" style="padding-top:50px">System settings</th>
+				</tr>
+				{% for e, k in device_settings_system.items %}
+					<tr>
+						<td>{{e}}</td>
+						<td>{{k}}</td>
+					</tr>
+				{% endfor %}
+
+				<tr>
+					<th colspan="2" style="padding-top:50px">Secure settings</th>
+				</tr>
+				{% for e, k in device_settings_secure.items %}
+					<tr>
+						<td>{{e}}</td>
+						<td>{{k}}</td>
+					</tr>
+				{% endfor %}
+
+				<tr>
+					<th colspan="2" style="padding-top:50px">Device features</th>
+				</tr>
+				{% for e, k in device_features.items %}
+					<tr>
+						<td>{{e}}</td>
+						<td>{{k}}</td>
+					</tr>
+				{% endfor %}
+				<tr>
+					<th colspan="2"> </th>
+				</tr>
+			</table>
+
+
+			<h3>Special Information</h3>
+			<table class="table">
+				<tr>
+					<td>User email:</td>
+					<td>{{report.user_email}}</td>
+				</tr>
+				<tr>
+					<td>Is silent:</td>
+					<td>{{report.is_silent}}</td>
+				</tr>
+				<tr>
+					<td>User comment:</td>
+					<td>{{report.user_comment}}</td>
+				</tr>
+				<tr>
+					<td>Custom data:</td>
+					<td>{{report.custom_data}}</td>
+				</tr>
+			</table>
+
+					('Report Status', {'fields': ['description','solved'],'description': "Useful information to fix this issue."}),
+		</div>
+
+		<div class="col-md-3">
+			<table class="table">
+				<tr>
+					<th colspan="2">Application Information</th>
+				</tr>
+				<tr>
+					<td>Version Name:</td>
+					<td>{{report.app_version_name}}</td>
+				</tr>
+				<tr>
+					<td>Version Code:</td>
+					<td>{{report.app_version_code}}</td>
+				</tr>
+				<tr>
+					<td>Package name:</td>
+					<td>{{report.package_name}}</td>
+				</tr>
+			</table>
+
+			<table class="table">
+				<tr>
+					<th colspan="2">Base Information</th>
+				</tr>
+				<tr>
+					<td>Report id:</td>
+					<td>{{report.report_id}}</td>
+				</tr>
+				<tr>
+					<td>Installation id:</td>
+					<td>{{report.installation_id}}</td>
+				</tr>
+				<tr>
+					<td>Brand:</td>
+					<td>{{report.brand}}</td>
+				</tr>
+				<tr>
+					<td>Product:</td>
+					<td>{{report.product}}</td>
+				</tr>
+				<tr>
+					<td>Phone model:</td>
+					<td>{{report.phone_model}}</td>
+				</tr>
+				<tr>
+					<td>Android version:</td>
+					<td>{{report.android_version}}</td>
+				</tr>
+				<tr>
+					<td>Application Start Date:</td>
+					<td>{{report.user_app_start_date}}</td>
+				</tr>
+				<tr>
+					<td>Crash Date</td>
+					<td>{{report.user_crash_date}}</td>
+				</tr>
+				<tr>
+					<td>Created</td>
+					<td>{{report.created}}</td>
+				</tr>
+				<tr>
+					<td>Total memory</td>
+					<td>{{report.total_mem_size}}</td>
+				</tr>
+				<tr>
+					<td>Available memory</td>
+					<td>{{report.available_mem_size}}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}

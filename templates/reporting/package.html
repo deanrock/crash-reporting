@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{package}}</h1>
+
+
+<h3>Exceptions</h3>
+<a name="exceptions" class="hash"></a>
+<table class="table">
+<tr>
+<th>Exception</th>
+<th>Reports</th>
+<th>Count</th>
+<th>Last reported</th>
+</tr>
+{% for v in unique %}
+<tr>
+<td>{{v.short|linebreaks}}</td>
+<td>{% for r in v.reports %}<a href="/reports/android/{{package}}/{{r.id}}/" style="{% if r.solved == 'solved' %}color:green{%else%}color:red{% endif %}">#{{r.id}}</a> {% endfor %}</td>
+<td>{{v.count}}</td>
+<td style="min-width:180px">{{v.last_reported}}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h3>Reports</h3>
+<a name="reports" class="hash"></a>
+<table class="table">
+<tr>
+<th></th>
+<th>Brand</th>
+<th>Product</th>
+<th>Android version</th>
+<th>Reported</th>
+<th>App version</th>
+<th>Solved</th>
+</tr>
+{% for report in reports %}
+<tr>
+<td><a href="/reports/android/{{package}}/{{report.id}}/">#{{report.id}}</a></td>
+<td>{{report.brand}}</td>
+<td>{{report.product}}</td>
+<td>{{report.android_version}}</td>
+<td>{{report.created}}</td>
+<td>{{report.app_version_name}}</td>
+<td>{{report.solved}}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

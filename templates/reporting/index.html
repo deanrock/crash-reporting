@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Apps</h1>
+<table class="table">
+<tr>
+<th>Platform</th>
+<th>Name</th>
+</tr>
+{% for package in packages %}
+<tr>
+<td><a href="/reports/android/{{package.package_name}}/">android</a></td>
+<td><a href="/reports/android/{{package.package_name}}/">{{package.package_name}}</a></td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
