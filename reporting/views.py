@@ -55,20 +55,38 @@ def index(request):
 
 @login_required
 def package(request, package):
+    if 'toggle-solved' in request.GET and 'status' in request.GET:
+        reports = request.GET['toggle-solved'].split(',')
+
+        for r in reports:
+            if len(r) > 0:
+                report = CrashReport.objects.filter(package_name=package, id=r).first()
+                report.solved = 'solved' if (request.GET['status'] == 'False') else 'unsolved'
+                report.save()
+
+        return redirect('/reports/android/%s/' % (report.package_name))            
+
     unique = {}
     reports = CrashReport.objects.filter(package_name=package).order_by('-created')
 
     for r in reports:
         x = re.sub(r'\.java:([0-9]+)\)\n', 'REMOVED', r.stack_trace)
         if x in unique:
-            unique[x]['reports'].append(r)
+            if r.app_version_name in unique[x]['reports']:
+                unique[x]['reports'][r.app_version_name].append(r)
+            else:
+                unique[x]['reports'][r.app_version_name] = [r]
+
+            unique[x]['solved'] = unique[x]['solved'] and r.solved == 'solved'
+            
             unique[x]['count'] = unique[x]['count'] + 1
             if r.created > unique[x]['last_reported']:
                 unique[x]['last_reported'] = r.created
         else:
             unique[x] = {
-                'reports': [r],
-                'count': 1
+                'reports': {r.app_version_name: [r]},
+                'count': 1,
+                'solved': r.solved == 'solved',
             }
 
             unique[x]['last_reported'] = r.created

@@ -12,13 +12,23 @@
 <th>Reports</th>
 <th>Count</th>
 <th>Last reported</th>
+<th></th>
 </tr>
 {% for v in unique %}
 <tr>
 <td>{{v.short|linebreaks}}</td>
-<td>{% for r in v.reports %}<a href="/reports/android/{{package}}/{{r.id}}/" style="{% if r.solved == 'solved' %}color:green{%else%}color:red{% endif %}">#{{r.id}}</a> {% endfor %}</td>
+<td>{% for k,val in v.reports.items %}
+	{{k}}: 
+	{% for r in val %}<a href="/reports/android/{{package}}/{{r.id}}/" style="{% if r.solved == 'solved' %}color:green{%else%}color:red{% endif %}">#{{r.id}}</a> {%endfor%}<br />{% endfor %}</td>
 <td>{{v.count}}</td>
 <td style="min-width:180px">{{v.last_reported}}</td>
+<td><a href="/reports/android/{{package}}/?toggle-solved={% for k, val in v.reports.items %}{% for r in val %}{{r.id}},{% endfor%}{%endfor%}&amp;status={{v.solved}}">
+	{% if v.solved %}
+	<span class="glyphicon glyphicon-ok" style="color:green"></span>
+	{% else %}
+	<span class="glyphicon glyphicon-remove" style="color:red"></span>
+	{% endif %}</a>
+</td>
 </tr>
 {% endfor %}
 </table>
