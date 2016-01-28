@@ -91,6 +91,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOGIN_URL = '/login'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
@@ -134,3 +135,7 @@ LOGGING = {
         },
     }
 }
+
+SSO_SERVER_URL = ''
+SSO_PUBLIC_KEY = ''
+SSO_PRIVATE_KEY = ''

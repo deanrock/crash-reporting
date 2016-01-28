@@ -1,2 +1,4 @@
-Django==1.7
-
+Django==1.8
+git+https://github.com/deanrock/webservices
+git+https://github.com/deanrock/django-simple-sso
+requests
